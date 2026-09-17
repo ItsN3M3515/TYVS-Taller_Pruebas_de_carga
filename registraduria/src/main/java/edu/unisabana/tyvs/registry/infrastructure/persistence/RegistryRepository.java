@@ -1,26 +1,41 @@
 package edu.unisabana.tyvs.registry.infrastructure.persistence;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import edu.unisabana.tyvs.registry.application.port.out.RegistryRepositoryPort;
 import java.sql.*;
 import java.util.Optional;
+import javax.sql.DataSource;
 
 public class RegistryRepository implements RegistryRepositoryPort {
-    private final String jdbcUrl;
-    private final String username;
-    private final String password;
+    private final DataSource dataSource;
 
     public RegistryRepository(String jdbcUrl) {
         this(jdbcUrl, "", "");
     }
 
     public RegistryRepository(String jdbcUrl, String username, String password) {
-        this.jdbcUrl = jdbcUrl;
-        this.username = username;
-        this.password = password;
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setMaximumPoolSize(20);
+        config.setMinimumIdle(5);
+        config.setConnectionTimeout(3000);
+        config.setIdleTimeout(60000);
+        config.setMaxLifetime(180000);
+        this.dataSource = new HikariDataSource(config);
+    }
+
+    public RegistryRepository(DataSource dataSource) {
+        if (dataSource == null) {
+            throw new IllegalArgumentException("DataSource no puede ser nulo");
+        }
+        this.dataSource = dataSource;
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(jdbcUrl, username, password);
+        return dataSource.getConnection();
     }
 
     @Override

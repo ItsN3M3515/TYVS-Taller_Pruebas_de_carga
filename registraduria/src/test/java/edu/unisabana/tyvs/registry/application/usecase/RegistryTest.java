@@ -6,6 +6,7 @@ import edu.unisabana.tyvs.registry.domain.model.Person;
 import edu.unisabana.tyvs.registry.domain.model.RegisterResult;
 import edu.unisabana.tyvs.registry.infrastructure.persistence.RegistryRepository;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -86,5 +87,24 @@ public class RegistryTest {
 
         // Assert segundo registro
         assertEquals(RegisterResult.DUPLICATED, result2);
+    }
+
+    @Test
+    public void shouldUsePooledDataSourceForRepository() throws Exception {
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:h2:mem:regdb_pool;DB_CLOSE_DELAY=-1");
+        dataSource.setMaximumPoolSize(10);
+        dataSource.setMinimumIdle(2);
+
+        RegistryRepository pooledRepo = new RegistryRepository(dataSource);
+        pooledRepo.initSchema();
+        pooledRepo.deleteAll();
+
+        Person p = new Person("Luis", 200, 41, Gender.MALE, true);
+        RegisterResult result = new Registry(pooledRepo).registerVoter(p);
+
+        assertEquals(RegisterResult.VALID, result);
+        assertTrue(pooledRepo.existsById(200));
+        dataSource.close();
     }
 }

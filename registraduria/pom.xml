@@ -47,6 +47,13 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
+    <!-- JDBC + HikariCP: pool de conexiones para evitar crear una conexion por
+         cada operacion y mejorar la estabilidad bajo carga. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
     <!-- Actuator + Micrometer: expone metricas del SERVIDOR (pool de hilos,
          memoria, GC, latencia por endpoint). Sin esto la prueba de carga solo
          ve el sintoma desde fuera; con esto se puede diagnosticar la causa. -->
