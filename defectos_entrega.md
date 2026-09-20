@@ -46,3 +46,13 @@ La ejecucion se realizo con HikariCP activo. El log del servicio confirma el arr
 - **Estado:** Reproducido, corrección en validación.
 
 La prueba pequeña posterior al cambio del pool continuó respondiendo correctamente. Se requieren mediciones adicionales con observación de CPU, hilos y conexiones para aislar el límite de saturación antes de declarar resuelto PERF-03.
+
+## Resultado PERF-04: degradación de latencia a 200 VUs
+
+- **Escenario:** sonda controlada de 200 VUs durante 30 segundos.
+- **Peticiones:** 47.598, con throughput de 1.583,81 solicitudes por segundo.
+- **Errores HTTP y de negocio:** 0; todos los checks de estado 200 y cuerpo `VALID` pasaron.
+- **p95:** 324,78 ms, por encima del SLO de 300 ms.
+- **p99:** por encima del SLO de 800 ms.
+- **Resultado:** la capacidad funcional se mantiene, pero la latencia ya incumple el SLO a 200 VUs.
+- **Evidencia:** `perf/results/summary-stress-probe-200vus.json`.
