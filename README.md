@@ -2,7 +2,7 @@
 # Taller de Pruebas de Carga y Rendimiento
 
 Este taller tiene como objetivo aprender a **diseñar, implementar y ejecutar pruebas de carga y rendimiento** sobre un sistema tipo API/HTTP, aplicando buenas prácticas de ingeniería, análisis de resultados y automatización con CI.
-
+Pablo Andres Tamayo Gonzalez y Amy Jeanine Nossa Ramirez
 ---
 
 ## Objetivo General
