@@ -36,3 +36,13 @@ Fecha: 2026-09-17
 Resumen generado en `perf/results/summary-load-after-pool-valid.json`.
 
 La ejecucion se realizo con HikariCP activo. El log del servicio confirma el arranque de `HikariPool-1` y `HikariPool-2`, y el endpoint `/actuator/health` respondio con estado `UP` antes de iniciar la carga.
+
+## Resultado PERF-03: estrés no sostenible bajo 600 VUs
+
+- **Escenario:** estrés progresivo de 200 a 600 VUs.
+- **Resultado obtenido:** el cliente registró `connection refused` y `request timeout` durante la rampa.
+- **Interpretación:** la ejecución no cumple el criterio de errores menor al 1% y no debe usarse como medición de latencia válida.
+- **Causa investigada:** el servicio pierde disponibilidad bajo la presión máxima; el pool Hikari fue ampliado de 20 a 80 conexiones como corrección inicial.
+- **Estado:** Reproducido, corrección en validación.
+
+La prueba pequeña posterior al cambio del pool continuó respondiendo correctamente. Se requieren mediciones adicionales con observación de CPU, hilos y conexiones para aislar el límite de saturación antes de declarar resuelto PERF-03.

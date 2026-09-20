@@ -19,11 +19,13 @@ public class RegistryRepository implements RegistryRepositoryPort {
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(username);
         config.setPassword(password);
-        config.setMaximumPoolSize(20);
-        config.setMinimumIdle(5);
-        config.setConnectionTimeout(3000);
-        config.setIdleTimeout(60000);
-        config.setMaxLifetime(180000);
+        // Bajo carga los hilos del servidor pueden llegar a 600 VUs; con un pool
+        // pequeño la cola de conexiones se satura y las peticiones tiemblan con timeout.
+        config.setMaximumPoolSize(80);
+        config.setMinimumIdle(20);
+        config.setConnectionTimeout(10000);
+        config.setIdleTimeout(120000);
+        config.setMaxLifetime(600000);
         this.dataSource = new HikariDataSource(config);
     }
 
